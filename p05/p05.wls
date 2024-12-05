@@ -15,5 +15,5 @@ Total[ToExpression[#[[(Length[#]+1)/2]]]&/@correct]
 (*Part B*)
 g=Graph[#1->#2&@@@rules];
 incorr=Complement[lists,correct];
-sorted=TopologicalSort@Subgraph[g,#]&/@incorr;
+sorted=FindHamiltonianPath@Subgraph[g,#]&/@incorr;
 Total[ToExpression[#[[(Length[#]+1)/2]]]&/@sorted]
