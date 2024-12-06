@@ -1,7 +1,7 @@
 #!/usr/bin/env wolframscript
 (* ::Package:: *)
 
-input = StringSplit[#,""]&/@Import["input","List"];
+input = StringSplit[#,""]&/@Import["test","List"];
 {ym,xm}=Dimensions@input;
 {{y0,x0}}=Position[input,"^"];
 rot={{0,-1},{1,0}};
@@ -22,20 +22,29 @@ vis
 
 
 (*Part B*)
-loop[xo_,yo_]:=Block[{x,y,dir,idir,c,mark},
-dir={0,-1};
-idir=0;
-mark=ConstantArray[False,{ym,xm,4}];
-{x,y}={x0,y0};
+loop[x1_,y1_,d1_]:=Block[{vis,x,y,dir,ret},
+input[[y1,x1]]="#";
+ret=Catch[
+vis=<||>;
+{x,y,dir}={x1,y1,d1};
 While[x>0&&x<=xm&&y>0&&y<=ym,
-If[mark[[y,x,idir]],Return[True]];
-mark[[y,x,idir]]=True;
 c=input[[y,x]];
-If[c=="#"||(x==xo&&y==yo),{x,y}-=dir;dir=rot . dir;idir=Mod[idir+1,4];Continue[]];
+If[c=="#",{x,y}-=dir;dir=rot . dir;Continue[]];
+If[vis[[Key[{x,y,dir}]]],Throw[True]];
+vis[[Key[{x,y,dir}]]]=True;
 {x,y}+=dir;
 ];
-Return[False]];
-Total@Total@ParallelTable[Boole[(x!=x0||y!=y0)&&loop[x,y]],{x,1,xm},{y,1,ym},Method->"FinestGrained",ProgressReporting->True]
+False];
+input[[y1,x1]]=".";
+ret];
 
-
-
+{x,y}={x0,y0};
+dir={0,-1};
+res=0;
+Monitor[While[x>0&&x<=xm&&y>0&&y<=ym,
+c=input[[y,x]];
+If[c=="#",{x,y}-=dir;dir=rot . dir;Continue[]];
+If[c=="."&&loop[x,y,dir],input[[y,x]]="^"; res++,input[[y,x]]="x"];
+{x,y}+=dir;
+],res]
+res
