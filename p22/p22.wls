@@ -19,7 +19,7 @@ prices=Developer`ToPackedArray[Mod[NestList[step,#,2000],10]&/@input];
 dprices=Developer`ToPackedArray[Differences/@prices];
 diffs=Developer`ToPackedArray[DeleteDuplicates[Differences/@Select[Tuples[Range[0,9],5],#[[5]]>=#[[1]]&&#[[5]]>=#[[2]]&&#[[5]]>=#[[3]]&&#[[5]]>=#[[4]]&]]];
 value[seq_,pl_,dl_]:=First[SequencePosition[dl,seq,1]/.{{from_,to_}:>pl[[to+1]]},0]
-tval[seq_]:=(cnt++;Sum[value[seq,prices[[i]],dprices[[i]]],{i,1,Length@prices}])
+tval[seq_]:=Sum[value[seq,prices[[i]],dprices[[i]]],{i,1,Length@prices}]
 MaximalBy[diffs,tval]
 tval[%[[1]]]
 
